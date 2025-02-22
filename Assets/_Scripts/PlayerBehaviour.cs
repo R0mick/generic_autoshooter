@@ -9,8 +9,6 @@ namespace _Scripts
 {
     public class PlayerBehaviour : MonoBehaviour
     {
-
-        public static PlayerBehaviour Instance;
         
         [SerializeField] private float speed = 1.6f;
         [SerializeField] private float maxHealth;
@@ -58,14 +56,6 @@ namespace _Scripts
             }
         }
 
-        void Awake()
-        {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-        }
-
         void Start()
         {
             _boxCollider = GetComponent<BoxCollider2D>();
@@ -74,7 +64,6 @@ namespace _Scripts
             CurrentHealth = 15;
         }
         
-        // Update is called once per frame
         void Update()
         {
 

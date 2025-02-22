@@ -7,20 +7,20 @@ public class SlimeXL : AbstractEnemy
     
     protected override void Start() //rebuild with constructor
     {
-        enemyName = "SlimeXL";
-        enemyMaxHealth = 150;
-        enemyHealth = 150;
-        enemySpeed = 0.5f;
-        enemyDamage = 10;
+        EnemyName = "SlimeXL";
+        EnemyMaxHealth = 150;
+        EnemyHealth = 150;
+        EnemySpeed = 0.5f;
+        EnemyDamage = 10;
         EnemyScore = 20;
 
-        isMinionSpawner = true;
+        IsMinionSpawner = true;
         isSpawnMinionAfterDeath = true;
         spawnMinionName = "SlimeM";
         spawnMinionAfterDeathName = "SlimeL";
         spawnMinionCount = 1;
         spawnAfterDeathCount = 2;
-        spawnMinionRate = 2f;
+        SpawnMinionRate = 2f;
             
         base.Start();
     }
@@ -28,7 +28,7 @@ public class SlimeXL : AbstractEnemy
     protected override void ChangeHpBar (float newCurrentHp)
     {
             
-        var hpPart = (enemyHealth/enemyMaxHealth );
+        var hpPart = (EnemyHealth/EnemyMaxHealth );
             
         enemyHpBar.transform.localScale = new Vector3(hpPart,1,1); ;
             

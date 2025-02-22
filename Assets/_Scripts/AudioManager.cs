@@ -193,7 +193,7 @@ public class AudioManager : MonoBehaviour
         }
     }
     
-    public void PlayEnemyDeathClip(string enemyName)
+    public void PlayEnemyDeathClip(string enemyName) //todo new sounds ?
     {
         switch (enemyName)
         {
@@ -212,10 +212,15 @@ public class AudioManager : MonoBehaviour
                 sfxSource.PlayOneShot(slimeDeath);
                 break;
             }
+            case "SlimeXL":
+            {
+                sfxSource.PlayOneShot(slimeDeath);
+                break;
+            }
         }
     }
     
-    public void PlayEnemyTakesDamageClip(string enemyName)
+    public void PlayEnemyTakesDamageClip(string enemyName)//todo implement
     {
         switch (enemyName)
         {

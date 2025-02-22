@@ -6,10 +6,9 @@ using UnityEngine;
 
 namespace _Scripts
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviour //todo make sequences more readable and changeable
     {
-
-        //add timer (spawn using spawner based on timer) 
+        
 
         [SerializeField] private SettingsPopup settingsPopup;
         [SerializeField] private AudioManager audioManager;
@@ -115,7 +114,7 @@ namespace _Scripts
             AbstractEnemy.OnDeathAbstractEnemy -= EnemyKilled;
         }
 
-        private void SpawningTimeLine()
+        private void SpawningTimeLine() //todo as struct
         {
             if (_timeFromStart > 0)
             {
@@ -212,7 +211,7 @@ namespace _Scripts
             }
         }
 
-        private void ChangeWeaponTimeLine()
+        private void ChangeWeaponTimeLine() //todo as struct
         {
             if (_timeFromStart > 0)
             {
@@ -347,9 +346,9 @@ namespace _Scripts
                     EndlessGameSequence();
                     break;
                 }
-                case "Company":
+                case "Campaign":
                 {
-                    CompanyGameSequence();
+                    CampaignGameSequence();
                     break;
                 }
             }
@@ -388,7 +387,7 @@ namespace _Scripts
         }
         
 
-        private void CompanyGameSequence()
+        private void CampaignGameSequence()
         {
             //implement company
         }

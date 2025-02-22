@@ -5,11 +5,11 @@ namespace _Scripts.EnemiesScripts
 
         protected override void Start() //rebuild with constructor
         {
-            enemyName = "SlimeM";
-            enemyMaxHealth = 4;
-            enemyHealth = 4;
-            enemySpeed = 1f;
-            enemyDamage = 2;
+            EnemyName = "SlimeM";
+            EnemyMaxHealth = 4;
+            EnemyHealth = 4;
+            EnemySpeed = 1f;
+            EnemyDamage = 2;
             EnemyScore = 2;
         
             isSpawnMinionAfterDeath = true;

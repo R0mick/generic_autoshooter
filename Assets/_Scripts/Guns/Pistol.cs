@@ -4,17 +4,17 @@ namespace _Scripts.Guns
     {
         protected override void Start()
         {
-            gunName = "Pistol";
-            bulletType = "TracerBullet";
-            gunDamage = 2;
-            bulletSpeed = 10;
-            maxAmmo = 10;
-            ammo = maxAmmo;
-            ammoConsumptionPerShot = 1;
-            fireDelay = 0.7f;
-            gunReloadTime = 2;
-            gunFireRadius = 2.5f;
-            bulletPiercing = 0;
+            GunName = "Pistol";
+            BulletType = "TracerBullet";
+            GunDamage = 2;
+            BulletSpeed = 10;
+            MaxAmmo = 10;
+            Ammo = MaxAmmo;
+            AmmoConsumptionPerShot = 1;
+            FireDelay = 0.7f;
+            GunReloadTime = 2;
+            GunFireRadius = 2.5f;
+            BulletPiercing = 0;
             base.Start();
 
         }

@@ -13,17 +13,17 @@ namespace _Scripts.Guns
 
         protected override void Start()
         {
-            gunName = "ShotgunSemiAuto";
-            bulletType = "ShotgunBullet";
-            gunDamage = 1;
-            bulletSpeed = 5;
-            maxAmmo = 6;
-            ammo = maxAmmo;
-            ammoConsumptionPerShot = 1;
-            fireDelay = 1f;
-            gunReloadTime = 2f;
-            gunFireRadius = 2.5f;
-            bulletPiercing = 1;
+            GunName = "ShotgunSemiAuto";
+            BulletType = "ShotgunBullet";
+            GunDamage = 1;
+            BulletSpeed = 5;
+            MaxAmmo = 6;
+            Ammo = MaxAmmo;
+            AmmoConsumptionPerShot = 1;
+            FireDelay = 1f;
+            GunReloadTime = 2f;
+            GunFireRadius = 2.5f;
+            BulletPiercing = 1;
             verticalSpread = 15;
             bulletsPerShot = 8;
             horizontalSpread = 0.001f;
@@ -47,11 +47,11 @@ namespace _Scripts.Guns
             for (int i = 0; i < bulletsPerShot; i++)
             {
                 GameObject bulletInstance =
-                    Instantiate(bulletPrefab, firePoint.transform.position, Quaternion.identity);
+                    Instantiate(BulletPrefab, FirePoint.transform.position, Quaternion.identity);
 
                 AbstractBullet abstractBulletScript = bulletInstance.GetComponent<AbstractBullet>();
 
-                abstractBulletScript.SetStats(gunDamage, bulletSpeed, bulletPiercing, verticalSpread);
+                abstractBulletScript.SetStats(GunDamage, BulletSpeed, BulletPiercing, verticalSpread);
                 abstractBulletScript.SetDirection(enemyPosition);
 
                 yield return new WaitForSeconds(horizontalSpread);

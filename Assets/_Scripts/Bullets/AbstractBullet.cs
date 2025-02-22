@@ -13,21 +13,15 @@ namespace _Scripts.Bullets
         private Vector3 _targetDirection;
         private Vector3 _initialForward;
         public int damage = 0;
-        public float speed = 0;
+        protected float Speed = 0;
         public int piercing = 0;
-        public int spread = 0;
+        protected int Spread = 0;
 
-        //protected CircleCollider2D _collider2D;
-
-        protected virtual void Start()
-        {
-            //_collider2D = GetComponent<CircleCollider2D>();
-        }
 
         protected virtual void FixedUpdate()
         {
             //transform.Translate(_targetDirection * (speed * Time.fixedDeltaTime));
-            transform.Translate(_targetDirection * (speed * Time.fixedDeltaTime), Space.World);
+            transform.Translate(_targetDirection * (Speed * Time.fixedDeltaTime), Space.World);
             
             DestroyBulletByWall();
         }
@@ -35,11 +29,11 @@ namespace _Scripts.Bullets
 
         public void SetDirection(Vector3 targetPosition)
         {
-            // Calculate the base direction to the target
+            // Calculate the base direction to the targetPlayer
             Vector3 baseDirection = (targetPosition - transform.position).normalized;
 
             // Generate a random verticalSpread angle within the specified range
-            float randomAngle = Random.Range(-spread, spread);
+            float randomAngle = Random.Range(-Spread, Spread);
 
             // Convert the angle to radians
             float randomRadians = randomAngle * Mathf.Deg2Rad;
@@ -58,9 +52,9 @@ namespace _Scripts.Bullets
         public void SetStats(int gunDamage, float bulletSpeed, int bulletPiercing,int bulletSpread)
         {
             damage = gunDamage;
-            speed = bulletSpeed;
+            Speed = bulletSpeed;
             piercing = bulletPiercing;
-            spread = bulletSpread;
+            Spread = bulletSpread;
         }
 
 
@@ -88,7 +82,6 @@ namespace _Scripts.Bullets
             _target = newTarget;
         }*/
     }
-    
 }
 
 

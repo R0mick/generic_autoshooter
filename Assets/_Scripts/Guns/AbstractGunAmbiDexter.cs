@@ -7,8 +7,12 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+
 namespace _Scripts.Guns
 {
+    /// <summary>
+    /// one weapon shoots single targetPlayer (backup, not used in logic)
+    /// </summary>
     public abstract class AbstractGunAmbi : MonoBehaviour
     {
 
@@ -233,19 +237,19 @@ namespace _Scripts.Guns
         void Highlite()
         {
             float proximityThreshold = 0.1f;
-            // Поиск ближайшего неподсвеченного врага
+           
             GameObject unaimedEnemy = HighliteClosestUnaimedEnemy(aimRadius);
 
-            // Если найдена новая цель
+           
             if (unaimedEnemy != null)
             {
-                // Если была старая цель, сравниваем расстояние
+               
                 if (closestEnemyGameObjectCurrent != null)
                 {
                     float distanceToNewEnemy = Vector3.Distance(transform.position, unaimedEnemy.transform.position);
                     float distanceToOldEnemy = Vector3.Distance(transform.position, closestEnemyGameObjectCurrent.transform.position);
 
-                    // Если новый враг ближе чем старый на пороговое значение, переключаемся
+                   
                     if (distanceToNewEnemy < distanceToOldEnemy - proximityThreshold)
                     {
                         closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = false;
@@ -255,24 +259,23 @@ namespace _Scripts.Guns
                 }
                 else
                 {
-                    // Если старой цели не было, просто назначаем новую
+                    
                     closestEnemyGameObjectCurrent = unaimedEnemy;
                     closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
                 }
             }
             else
             {
-                // Если новой цели нет, но была старая, оставляем её подсвеченной
+               
                 if (closestEnemyGameObjectCurrent != null)
                 {
                     closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
                 }
             }
 
-            // Сохраняем старую цель для следующей итерации
+           
             closestEnemyGameObjectPast = closestEnemyGameObjectCurrent;
         }
-        
         
         protected virtual GameObject HighliteClosestUnaimedEnemy(float radius)
         {

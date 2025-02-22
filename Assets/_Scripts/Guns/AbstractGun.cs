@@ -9,56 +9,45 @@ using UnityEngine.Serialization;
 
 namespace _Scripts.Guns
 {
+
     public abstract class AbstractGun : MonoBehaviour
     {
 
-        public GameObject bulletPrefab;
-        public Transform enemyTarget;
-        public GameObject firePoint;
+        protected GameObject BulletPrefab;
+        protected GameObject FirePoint;
 
-        public string gunName;
-        public string bulletType;
-        public int gunDamage = 0;
-        public int bulletSpeed = 0;
-        public int maxAmmo = 0;
-        public int ammo = 0;
-        public int ammoConsumptionPerShot = 0;
-        public float fireDelay = 0;
-        public float gunReloadTime = 0;
-        public float gunFireRadius = 0; //1 = 100 pix
-        private float gunRotateRadius = 0; //1 = 100 pix
-        private float aimRadius = 0; //1 = 100 pix
-        public int bulletPiercing = 0;
+        [SerializeField] protected string GunName;
+        [SerializeField] protected string BulletType;
+        [SerializeField] protected int GunDamage = 0;
+        [SerializeField] protected int BulletSpeed = 0;
+        [SerializeField] protected int MaxAmmo = 0;
+        [SerializeField] protected int Ammo = 0;
+        [SerializeField] protected int AmmoConsumptionPerShot = 0;
+        [SerializeField] protected float FireDelay = 0;
+        [SerializeField] protected float GunReloadTime = 0;
+        [SerializeField] protected float GunFireRadius = 0; //1 = 100 pix
+        [SerializeField] private float _gunRotateRadius = 0; //1 = 100 pix
+        [SerializeField] private float _aimRadius = 0; //1 = 100 pix
+        [SerializeField] protected int BulletPiercing = 0;
         [FormerlySerializedAs("spread")] public int verticalSpread = 0;
 
-        public GameObject closestEnemyGameObjectPast;
-        public GameObject closestEnemyGameObjectCurrent;
-        /*public event Action <GameObject> OnEquip;
-        public event Action <GameObject> OnUnEquip;
-        public event Action <string> OnGunShoot;
-        public event Action <string> OnGunReload;
-        */
+        private GameObject _closestEnemyGameObjectPast; //todo check usage
+        private GameObject _closestEnemyGameObjectCurrent;
+
         
         private bool _isReloading = false;
         private readonly float _switchingEnemyRate = 0.01f;
         private Coroutine _shootingCoroutine;
-
-
-        //public static List<Transform> enemyTransformList;
         
-        private void OnEnable()
-        {
-            
-        }
-
+//Weapon setup
         protected virtual void Start()
         {
             AudioManager.Instance.DrawWeaponClip();
             
-            gunRotateRadius = gunFireRadius + 1.5f;
-            aimRadius = gunFireRadius + 2;
+            _gunRotateRadius = GunFireRadius + 1.5f;
+            _aimRadius = GunFireRadius + 2;
             
-            ChangeBulletType(bulletType);
+            ChangeBulletType(BulletType);
             SetFirePoint();
             
             _shootingCoroutine = StartCoroutine(Shooting());
@@ -76,7 +65,7 @@ namespace _Scripts.Guns
             }
             else
             {
-                ReloadRotation(gunReloadTime);
+                ReloadRotation(GunReloadTime);
             }
         }
 
@@ -90,65 +79,65 @@ namespace _Scripts.Guns
 
         protected virtual void ChangeBulletType(string type)
         {
-            bulletPrefab = Resources.Load<GameObject>("BulletTypePrefabs/" + type);
+            BulletPrefab = Resources.Load<GameObject>("BulletTypePrefabs/" + type);
         }
 
+        //bullets creates and fly from here
         protected virtual void SetFirePoint()
         {
-            firePoint = transform.GetChild(0).gameObject;
+            FirePoint = transform.GetChild(0).gameObject;
         }
 
         protected virtual void FireBullet(Vector3 enemyPosition)
         {
-            GameObject bulletInstance = Instantiate(bulletPrefab, firePoint.transform.position, Quaternion.identity);
+            GameObject bulletInstance = Instantiate(BulletPrefab, FirePoint.transform.position, Quaternion.identity);
 
             AbstractBullet abstractBulletScript = bulletInstance.GetComponent<AbstractBullet>();
 
-            abstractBulletScript.SetStats(gunDamage, bulletSpeed, bulletPiercing,verticalSpread);
+            abstractBulletScript.SetStats(GunDamage, BulletSpeed, BulletPiercing,verticalSpread);
             abstractBulletScript.SetDirection(enemyPosition);
-
         }
 
 
-        protected IEnumerator Shooting()
+        //auto shooting sequence
+        private IEnumerator Shooting()
         {
             while (true)
             {
-                //handle gunfire radius
+                //handle gunfire radius (uses targetPlayer from aim methods)
                 Transform localEnemyTarget = null;
-                if (closestEnemyGameObjectCurrent != null)
+                if (_closestEnemyGameObjectCurrent != null)
                 {
-                    if (Vector3.Distance(transform.position, closestEnemyGameObjectCurrent.transform.position) <=
-                        gunFireRadius)
+                    if (Vector3.Distance(transform.position, _closestEnemyGameObjectCurrent.transform.position) <=
+                        GunFireRadius)
                     {
-                        localEnemyTarget = closestEnemyGameObjectCurrent.transform;
+                        localEnemyTarget = _closestEnemyGameObjectCurrent.transform;
                     }
                 }
                 
-                //Shooting if there is a target in gunfire radius
+                //Shooting if there is a targetPlayer in gunfire radius
                 if (localEnemyTarget != null)
                 {
                     //Debug.Log("ammo before shot = "+ammo);
-                    FireBullet(closestEnemyGameObjectCurrent.transform.position);
-                    AudioManager.Instance.PlayGunShootClip(gunName);
-                    ammo -= ammoConsumptionPerShot;
+                    FireBullet(_closestEnemyGameObjectCurrent.transform.position);
+                    AudioManager.Instance.PlayGunShootClip(GunName);
+                    Ammo -= AmmoConsumptionPerShot;
                     //Debug.Log("ammo after shot = "+ammo);
                     
                     //reload
-                    if (ammo <= 0)
+                    if (Ammo <= 0)
                     {
-                        
                         //Debug.Log("reloading");
-                        AudioManager.Instance.PlayGunReloadClip(gunName);
+                        AudioManager.Instance.PlayGunReloadClip(GunName);
                         _isReloading = true;
-                        yield return new WaitForSeconds(gunReloadTime);
-                        ammo = maxAmmo;
+                        yield return new WaitForSeconds(GunReloadTime);
+                        Ammo = MaxAmmo;
                         _isReloading = false;
                     }
-                    //continue firing using delay
+                    //or continue firing using delay
                     else
                     {
-                        yield return new WaitForSeconds(fireDelay);
+                        yield return new WaitForSeconds(FireDelay);
                         //Debug.Log("fire delaty");
                     }
                 }
@@ -181,21 +170,18 @@ namespace _Scripts.Guns
             {
                 transform.Rotate(Vector3.forward * Time.deltaTime * -rotationSpeed);
             }
-                
-
         }
 
         protected virtual void RotateGunToEnemy()
         {
-            
             //handle aim radius for animation
             Transform enemyTransform = null;
-            if (closestEnemyGameObjectCurrent != null)
+            if (_closestEnemyGameObjectCurrent != null)
             {
-                if (Vector3.Distance(transform.position, closestEnemyGameObjectCurrent.transform.position) <=
-                    gunRotateRadius)
+                if (Vector3.Distance(transform.position, _closestEnemyGameObjectCurrent.transform.position) <=
+                    _gunRotateRadius)
                 {
-                    enemyTransform = closestEnemyGameObjectCurrent.transform;
+                    enemyTransform = _closestEnemyGameObjectCurrent.transform;
                 }
             }
 
@@ -204,16 +190,16 @@ namespace _Scripts.Guns
             {
                 Vector3 directionToTarget = enemyTransform.position - transform.position;
 
-                // Вычисление угла поворота
+                // rotation angle calc
                 float angle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
 
-                // Применение поворота по оси Z
+                // apply rotation to Z
                 transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
-                // Проверяем, где находится цель относительно оружия
+                // check on which side is enemy
                 bool isOnLeftSide = directionToTarget.x > 0;
 
-                // Масштабирование для зеркального отражения
+                // mirroring
                 if (isOnLeftSide)
                 {
                     transform.localScale = new Vector3(-1.2f, -1.2f, 0f);
@@ -245,55 +231,54 @@ namespace _Scripts.Guns
         void AimTargetEnemy()
         {
             
-        //Handle blink switch target    
+        //Handle blink switch targetPlayer    
         float proximityThreshold = 0.1f;  
-        // Поиск ближайшего неподсвеченного врага
-        GameObject unaimedEnemy = FindClosestUnaimedEnemy(aimRadius);
+        // search for closest not aimed enemy
+        GameObject unaimedEnemy = FindClosestUnaimedEnemy(_aimRadius);
 
-        // Если найдена новая цель
+        // new targetPlayer
         if (unaimedEnemy != null)
         {
-            // Если была старая цель, сравниваем расстояние
-            if (closestEnemyGameObjectCurrent != null)
+            // compare with old targetPlayer
+            if (_closestEnemyGameObjectCurrent != null)
             {
                 float distanceToNewEnemy = Vector3.Distance(transform.position, unaimedEnemy.transform.position);
-                float distanceToOldEnemy = Vector3.Distance(transform.position, closestEnemyGameObjectCurrent.transform.position);
+                float distanceToOldEnemy = Vector3.Distance(transform.position, _closestEnemyGameObjectCurrent.transform.position);
 
-                // Если новый враг ближе чем старый на пороговое значение, переключаемся
+                // switch if new targetPlayer closer then old
                 if (distanceToNewEnemy < distanceToOldEnemy - proximityThreshold)
                 {
-                    closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = false;
-                    closestEnemyGameObjectCurrent = unaimedEnemy;
-                    closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
+                    _closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = false;
+                    _closestEnemyGameObjectCurrent = unaimedEnemy;
+                    _closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
                 }
             }
             else
             {
-                // Если старой цели не было, просто назначаем новую
-                closestEnemyGameObjectCurrent = unaimedEnemy;
-                closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
+                // if no targetPlayer aim new
+                _closestEnemyGameObjectCurrent = unaimedEnemy;
+                _closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
             }
         }
         else
         {
-            // Если новой цели нет, но была старая, оставляем её подсвеченной
-            if (closestEnemyGameObjectCurrent != null)
+            // if no targetPlayer but was old, aim it
+            if (_closestEnemyGameObjectCurrent != null)
             {
-                closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
+                _closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
             }
             else
             {
-                // Если нет неподсвеченных врагов и текущей цели тоже нет, ищем единственного подсвеченного врага
-                closestEnemyGameObjectCurrent = FindSingleAimedEnemy(aimRadius);
-                if (closestEnemyGameObjectCurrent != null)
+                // if no anaimed and current targetPlayer, search for single aimed (handle multi guns to one targetPlayer)
+                _closestEnemyGameObjectCurrent = FindSingleAimedEnemy(_aimRadius);
+                if (_closestEnemyGameObjectCurrent != null)
                 {
-                    closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
+                    _closestEnemyGameObjectCurrent.GetComponent<AbstractEnemy>().onAim = true;
                 }
             }
         }
-
-        // Сохраняем старую цель для следующей итерации
-        closestEnemyGameObjectPast = closestEnemyGameObjectCurrent;
+        
+        _closestEnemyGameObjectPast = _closestEnemyGameObjectCurrent;
     }
         
         

@@ -14,18 +14,18 @@ namespace _Scripts.EnemiesScripts
         private BoxCollider2D _boxCollider;
         private Animator _enemyAnimator;
         
-        public string enemyName = "AbstractEnemy";
-        public  float enemyMaxHealth = 1;
-        public  float enemyHealth = 1;
-        public  float enemySpeed = 1;
+        protected string EnemyName = "AbstractEnemy";
+        protected  float EnemyMaxHealth = 1;
+        protected  float EnemyHealth = 1;
+        protected  float EnemySpeed = 1;
         private float _randomSpeedModifier;
-        public  int enemyDamage = 1;
+        protected  int EnemyDamage = 1;
         protected int EnemyScore = 1;
 
         
-        public bool isMinionSpawner = false;
+        protected bool IsMinionSpawner = false;
         public int spawnMinionCount = 0;
-        public float spawnMinionRate = 0;
+        protected float SpawnMinionRate = 0;
         public string spawnMinionName = "";
         
         public bool isSpawnMinionAfterDeath = false;
@@ -37,7 +37,7 @@ namespace _Scripts.EnemiesScripts
         private bool _isImmune = false;
         private bool _isDead = false;
 
-        public bool isChasing;
+        private bool _isChasing;
 
         protected List<GameObject> DamagedBullets;
         
@@ -57,11 +57,11 @@ namespace _Scripts.EnemiesScripts
             _enemyAnimator = GetComponent<Animator>();
             _boxCollider = GetComponent<BoxCollider2D>();
             _player = GameObject.Find("Player");
-            isChasing = true;
+            _isChasing = true;
             DamagedBullets = new List<GameObject>();
             _randomSpeedModifier =  Random.Range(0f, 0.1f);
             
-            if (isMinionSpawner)
+            if (IsMinionSpawner)
             {
                 StartCoroutine(SpawnMinion());
             }
@@ -70,7 +70,7 @@ namespace _Scripts.EnemiesScripts
 
         protected virtual void FixedUpdate()
         {
-            if (isChasing)
+            if (_isChasing)
             {
                 ChasePlayer();
             }
@@ -94,13 +94,13 @@ namespace _Scripts.EnemiesScripts
         
         protected virtual void TakeDamage(int damage)
         {
-            if (!_isImmune && !_isDead)
+            if (!_isImmune && !_isDead)//_isDead handles OnDeath.. events (trigger once) 
             {
                 //AudioManager.Instance.PlayEnemyTakesDamageClip(enemyName);
                 _enemyAnimator.SetTrigger("IsDamaged");
-                enemyHealth -= damage;
+                EnemyHealth -= damage;
                 ChangeHpBar(damage);
-                if (enemyHealth <= 0)
+                if (EnemyHealth <= 0)
                 {
                     _isDead = true;
                     Death();
@@ -110,7 +110,6 @@ namespace _Scripts.EnemiesScripts
 
         protected virtual void ChangeHpBar(float damageValue)
         {
-            
         }
         
         protected virtual void Death()
@@ -119,7 +118,7 @@ namespace _Scripts.EnemiesScripts
             OnDeathCurrentEnemy?.Invoke(this.gameObject); //obj info for spawner (to spawn minions)
             OnGiveScore?.Invoke(EnemyScore);
             //Debug.Log("Enemy's "+gameObject.GetInstanceID()+" ID death method activated");
-            AudioManager.Instance.PlayEnemyDeathClip(enemyName);
+            AudioManager.Instance.PlayEnemyDeathClip(EnemyName);
             Destroy(gameObject);
         }
 
@@ -141,21 +140,16 @@ namespace _Scripts.EnemiesScripts
                         Destroy(hit.gameObject);
                     }
                 }
-                /*else
-                {
-                    Debug.Log("Must be ignored for "+gameObject.name);
-                    Debug.Log(DamagedBullets.Count);
-                }*/
             }
         }
 
         protected virtual void ChasePlayer() //change to transform.translate and handle collision
         {
             Collider2D[] hits = GetCollidedObjectsByMask("Player");
-            if (isChasing)
+            if (_isChasing)
             {
                 _enemyAnimator.SetBool("IsWalking",true);
-                transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, Time.fixedDeltaTime * (enemySpeed+_randomSpeedModifier));
+                transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, Time.fixedDeltaTime * (EnemySpeed+_randomSpeedModifier));
 
                 //var distance = Vector3.Distance(transform.position, _player.transform.position);
             }
@@ -163,7 +157,7 @@ namespace _Scripts.EnemiesScripts
             if (hits.Length > 0)
             {
                 
-                _player.GetComponent<PlayerBehaviour>().TakeDamage(enemyDamage);
+                _player.GetComponent<PlayerBehaviour>().TakeDamage(EnemyDamage);
 
             }
         }
@@ -175,11 +169,11 @@ namespace _Scripts.EnemiesScripts
                 
                 //Debug.Log("Spawning minion in enemy script");
                 OnMinionSpawn?.Invoke(this.gameObject);
-                yield return new WaitForSeconds(spawnMinionRate);
+                yield return new WaitForSeconds(SpawnMinionRate);
             }
         }
         
-        protected virtual IEnumerator InvincibilityTimer()
+        protected virtual IEnumerator InvincibilityTimer()//bullet immune to newly spawned minions after host death
         {
             _isImmune = true;
     

@@ -4,11 +4,11 @@
     {
         protected override void Start() //rebuild with constructor
         {
-            enemyName = "SlimeS";
-            enemyMaxHealth = 1;
-            enemyHealth = 1;
-            enemySpeed = 1.3f;
-            enemyDamage = 1;
+            EnemyName = "SlimeS";
+            EnemyMaxHealth = 1;
+            EnemyHealth = 1;
+            EnemySpeed = 1.3f;
+            EnemyDamage = 1;
             EnemyScore = 1;
             
             base.Start();

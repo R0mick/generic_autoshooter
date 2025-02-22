@@ -9,20 +9,20 @@ namespace _Scripts.EnemiesScripts
         [SerializeField] private GameObject enemyHpBar;
         protected override void Start() //rebuild with constructor
         {
-            enemyName = "SlimeL";
-            enemyMaxHealth = 10;
-            enemyHealth = 10;
-            enemySpeed = 0.7f;
-            enemyDamage = 5;
+            EnemyName = "SlimeL";
+            EnemyMaxHealth = 10;
+            EnemyHealth = 10;
+            EnemySpeed = 0.7f;
+            EnemyDamage = 5;
             EnemyScore = 5;
 
-            isMinionSpawner = true;
+            IsMinionSpawner = true;
             isSpawnMinionAfterDeath = true;
             spawnMinionName = "SlimeS";
             spawnMinionAfterDeathName = "SlimeM";
             spawnMinionCount = 1;
             spawnAfterDeathCount = 2;
-            spawnMinionRate = 3f;
+            SpawnMinionRate = 3f;
             
             base.Start();
         }
@@ -31,7 +31,7 @@ namespace _Scripts.EnemiesScripts
         protected override void ChangeHpBar (float newCurrentHp)
         {
             
-            var hpPart = (enemyHealth/enemyMaxHealth );
+            var hpPart = (EnemyHealth/EnemyMaxHealth );
             
             enemyHpBar.transform.localScale = new Vector3(hpPart,1,1); ;
             

@@ -19,16 +19,16 @@ namespace _Scripts
         
         
         private PlayerBehaviour _player;
-        public Transform target;
+        public Transform targetPlayer;
         private bool _isShaking = false;
 
-        void LateUpdate() // LateUpdate гарантирует выполнение после всех Update
+        void LateUpdate()
         {
             
             if (!_isShaking)
             {
                 transform.position =
-                    new Vector3(target.position.x, target.position.y,
+                    new Vector3(targetPlayer.position.x, targetPlayer.position.y,
                         gameObject.transform.position.z); // Перемещаем камеру сразу за персонажем
             }
         }
@@ -42,7 +42,7 @@ namespace _Scripts
         }
 
 
-        void Start()
+        private void Start()
         {
             PlayerBehaviour.OnPlayerTakeDamage += CameraShakeOnPlayerDamaged;
             PlayerBehaviour.OnPlayerDeath += CameraShakeOnPlayerDeath; 
@@ -74,6 +74,7 @@ namespace _Scripts
             StartCoroutine(Shake(duration, magnitude));
         }
         
+        //use for shake effects
         public IEnumerator Shake(float duration, float magnitude)
         {
             Vector3 originalPos = transform.localPosition;
